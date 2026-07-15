@@ -9,13 +9,24 @@ class Settings:
     """Event Processor configuration."""
 
     def __init__(self) -> None:
-        self.gcp_project_id = self._required("GCP_PROJECT_ID")
-        self.bigquery_raw_dataset = self._required(
-            "BIGQUERY_RAW_DATASET"
-        )
-        self.bigquery_raw_table = self._required(
-            "BIGQUERY_RAW_TABLE"
-        )
+         self.gcp_project_id = self._required("GCP_PROJECT_ID")
+
+         self.bigquery_raw_dataset = self._required(
+        "BIGQUERY_RAW_DATASET"
+    )
+
+         self.bigquery_raw_table = self._required(
+        "BIGQUERY_RAW_TABLE"
+    )
+
+         self.idempotency_collection = os.getenv(
+        "IDEMPOTENCY_COLLECTION",
+        "processed_events",
+    )
+
+         self.idempotency_lease_seconds = int(
+        os.getenv("IDEMPOTENCY_LEASE_SECONDS", "300")
+    )
 
     @staticmethod
     def _required(name: str) -> str:

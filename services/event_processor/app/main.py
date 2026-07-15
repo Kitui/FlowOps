@@ -15,7 +15,10 @@ from services.event_processor.app.models import (
 from services.event_processor.app.bigquery_writer import (
     bigquery_writer,
 )
-
+from services.event_processor.app.idempotency import (
+    ClaimResult,
+    idempotency_store,
+)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
@@ -174,8 +177,58 @@ async def receive_pubsub_message(
             },
         ) from validation_error
     
+
         # ---------------------------------------------------------
-    # 5. Write the validated event to BigQuery
+    # 5. Claim the event for idempotent processing
+    # ---------------------------------------------------------
+    try:
+        claim_result = idempotency_store.claim_event(
+            event=flowops_event,
+            pubsub_message_id=(
+                pubsub_envelope.message.message_id
+            ),
+        )
+
+    except Exception as error:
+        logger.exception(
+            (
+                "Idempotency claim failed | "
+                "message_id=%s | delivery_id=%s"
+            ),
+            pubsub_envelope.message.message_id,
+            flowops_event.delivery_id,
+        )
+
+        raise HTTPException(
+            status_code=503,
+            detail="The processor could not claim the event.",
+        ) from error
+
+    if claim_result != ClaimResult.CLAIMED:
+        logger.info(
+            (
+                "Duplicate event ignored | "
+                "delivery_id=%s | result=%s"
+            ),
+            flowops_event.delivery_id,
+            claim_result.value,
+        )
+
+        return JSONResponse(
+            status_code=200,
+            content={
+                "status": "duplicate_ignored",
+                "message_id": (
+                    pubsub_envelope.message.message_id
+                ),
+                "event_id": str(flowops_event.event_id),
+                "delivery_id": flowops_event.delivery_id,
+                "duplicate_state": claim_result.value,
+            },
+        )
+    
+    # ---------------------------------------------------------
+    # 6. Write the claimed event to BigQuery
     # ---------------------------------------------------------
     try:
         bigquery_writer.write_raw_event(
@@ -183,23 +236,32 @@ async def receive_pubsub_message(
             envelope=pubsub_envelope,
         )
 
-    except RuntimeError as error:
+        idempotency_store.mark_completed(
+            delivery_id=flowops_event.delivery_id
+        )
+
+    except Exception as error:
+        idempotency_store.mark_failed(
+            delivery_id=flowops_event.delivery_id,
+            error_message=str(error),
+        )
+
         logger.exception(
             (
-                "Event processing failed during BigQuery write | "
-                "message_id=%s | event_id=%s"
+                "Event processing failed | "
+                "message_id=%s | delivery_id=%s"
             ),
             pubsub_envelope.message.message_id,
-            flowops_event.event_id,
+            flowops_event.delivery_id,
         )
 
         raise HTTPException(
             status_code=503,
-            detail="The event could not be written to BigQuery.",
+            detail="The event could not be stored.",
         ) from error
 
     # ---------------------------------------------------------
-    # 6. Log successful validation
+    # 7. Log successful validation
     # ---------------------------------------------------------
     logger.info(
         (
@@ -220,7 +282,7 @@ async def receive_pubsub_message(
     publish_time = pubsub_envelope.message.publish_time
 
     # ---------------------------------------------------------
-    # 7. Return HTTP success
+    # 8. Return HTTP success
     # ---------------------------------------------------------
     return JSONResponse(
         status_code=200,
