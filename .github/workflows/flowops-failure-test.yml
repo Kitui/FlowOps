@@ -1,0 +1,29 @@
+name: FlowOps Failure Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      failure_reason:
+        description: "Reason for running the controlled failure test"
+        required: false
+        default: "Validate FlowOps failure monitoring"
+
+jobs:
+  controlled-failure:
+    name: Generate Controlled Failure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Display test information
+        run: |
+          echo "Starting controlled FlowOps failure test."
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Commit: $GITHUB_SHA"
+          echo "Reason: ${{ inputs.failure_reason }}"
+
+      - name: Generate expected failure
+        run: |
+          echo "This failure is intentional."
+          echo "FlowOps should capture this workflow run."
+          exit 1
