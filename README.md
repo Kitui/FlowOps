@@ -37,4 +37,4 @@ Looker Studio
 
 ## Status
 
-🚧 Currently under development.
+🚧 Currently under development. 60% DONE
