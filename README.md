@@ -39,3 +39,5 @@ Looker Studio
 
 🚧 Currently under development. 60% DONE
 Pull request webhook pipeline test.
+
+Additional pull request synchronization test.
