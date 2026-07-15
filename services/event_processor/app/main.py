@@ -12,6 +12,9 @@ from services.event_processor.app.models import (
     FlowOpsEvent,
     PubSubPushEnvelope,
 )
+from services.event_processor.app.bigquery_writer import (
+    bigquery_writer,
+)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -170,13 +173,37 @@ async def receive_pubsub_message(
                 "validation_errors": validation_errors,
             },
         ) from validation_error
+    
+        # ---------------------------------------------------------
+    # 5. Write the validated event to BigQuery
+    # ---------------------------------------------------------
+    try:
+        bigquery_writer.write_raw_event(
+            event=flowops_event,
+            envelope=pubsub_envelope,
+        )
+
+    except RuntimeError as error:
+        logger.exception(
+            (
+                "Event processing failed during BigQuery write | "
+                "message_id=%s | event_id=%s"
+            ),
+            pubsub_envelope.message.message_id,
+            flowops_event.event_id,
+        )
+
+        raise HTTPException(
+            status_code=503,
+            detail="The event could not be written to BigQuery.",
+        ) from error
 
     # ---------------------------------------------------------
-    # 5. Log successful validation
+    # 6. Log successful validation
     # ---------------------------------------------------------
     logger.info(
         (
-            "FlowOps event validated | "
+            "FlowOps event validated and stored| "
             "message_id=%s | "
             "event_id=%s | "
             "delivery_id=%s | "
@@ -193,12 +220,12 @@ async def receive_pubsub_message(
     publish_time = pubsub_envelope.message.publish_time
 
     # ---------------------------------------------------------
-    # 6. Return HTTP success
+    # 7. Return HTTP success
     # ---------------------------------------------------------
     return JSONResponse(
         status_code=200,
         content={
-            "status": "validated",
+            "status": "stored",
             "message_id": pubsub_envelope.message.message_id,
             "publish_time": (
                 publish_time.isoformat()
