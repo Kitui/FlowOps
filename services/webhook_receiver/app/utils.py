@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from typing import Any
 from uuid import uuid4
 
-from services.webhook_receiver.app.models import FlowOpsEvent
+from app.models import FlowOpsEvent
 
 
 def build_flowops_event(

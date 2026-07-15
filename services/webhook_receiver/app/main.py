@@ -5,10 +5,10 @@ from typing import Any
 from fastapi import FastAPI, Header, HTTPException, Request
 from fastapi.responses import JSONResponse
 
-from services.webhook_receiver.app.config import settings
-from services.webhook_receiver.app.publisher import publisher
-from services.webhook_receiver.app.security import verify_github_signature
-from services.webhook_receiver.app.utils import build_flowops_event
+from app.config import settings
+from app.publisher import publisher
+from app.security import verify_github_signature
+from app.utils import build_flowops_event
 
 logging.basicConfig(
     level=logging.INFO,

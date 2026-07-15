@@ -4,8 +4,8 @@ import logging
 from google.api_core.exceptions import GoogleAPICallError, RetryError
 from google.cloud import pubsub_v1
 
-from services.webhook_receiver.app.config import settings
-from services.webhook_receiver.app.models import FlowOpsEvent
+from app.config import settings
+from app.models import FlowOpsEvent
 
 logger = logging.getLogger(__name__)
 
