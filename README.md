@@ -43,3 +43,16 @@ Pull request webhook pipeline test.
 Additional pull request synchronization test.
 
 Second pull request webhook test.
+<<<<<<< HEAD
+=======
+
+Pull request synchronize event test.
+
+Pull request synchronize lifecycle test.
+
+Synchronize test after PR opened: 2026-07-15 17:59:56
+
+Synchronize test after PR opened: 2026-07-15 18:04:45
+
+Synchronize test after PR opened: 2026-07-15 18:05:08
+>>>>>>> a3fa7e336c27ac286d00feb5887839499db97040

@@ -1,0 +1,50 @@
+name: FlowOps CI
+
+on:
+  push:
+    branches:
+      - main
+      - "test/**"
+
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate FlowOps Project
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Display environment information
+        run: |
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Branch: $GITHUB_REF_NAME"
+          echo "Commit: $GITHUB_SHA"
+          python --version
+
+      - name: Validate Python files
+        run: |
+          python -m compileall services scripts
+
+      - name: Confirm SQL files exist
+        shell: bash
+        run: |
+          test -f sql/ddl/create_raw_github_events.sql
+          test -f sql/transformations/merge_push_events.sql
+          test -f sql/transformations/merge_pull_request_events.sql
+          test -f sql/transformations/merge_workflow_run_events.sql
+
+      - name: Complete CI test
+        run: |
+          echo "FlowOps CI validation completed successfully."
