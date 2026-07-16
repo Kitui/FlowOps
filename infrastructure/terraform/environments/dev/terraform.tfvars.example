@@ -1,0 +1,6 @@
+project_id        = "your-gcp-project-id"
+region            = "us-central1"
+bigquery_location = "US"
+
+event_processor_push_endpoint = "https://YOUR-PROCESSOR-URL/pubsub/push"
+event_processor_push_audience = "https://YOUR-PROCESSOR-URL"
