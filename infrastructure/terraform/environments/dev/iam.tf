@@ -44,6 +44,32 @@ locals {
       role   = "roles/bigquery.jobUser"
       member = "serviceAccount:${google_service_account.bigquery_transformer.email}"
     }
+
+    dataflow_worker_service = {
+      role   = "roles/dataflow.worker"
+      member = "serviceAccount:${google_service_account.dataflow_worker.email}"
+    }
+
+    dataflow_worker_pubsub_subscriber = {
+      role   = "roles/pubsub.subscriber"
+      member = "serviceAccount:${google_service_account.dataflow_worker.email}"
+    }
+
+    dataflow_worker_bigquery_editor = {
+      role   = "roles/bigquery.dataEditor"
+      member = "serviceAccount:${google_service_account.dataflow_worker.email}"
+    }
+
+    dataflow_worker_bigquery_job_user = {
+      role   = "roles/bigquery.jobUser"
+      member = "serviceAccount:${google_service_account.dataflow_worker.email}"
+    }
+
+    dataflow_worker_pubsub_viewer = {
+      role   = "roles/pubsub.viewer"
+      member = "serviceAccount:${google_service_account.dataflow_worker.email}"
+
+    }
   }
 }
 
@@ -69,4 +95,21 @@ resource "google_pubsub_topic_iam_member" "receiver_publisher" {
 
   role   = "roles/pubsub.publisher"
   member = "serviceAccount:${google_service_account.webhook_receiver.email}"
+}
+
+resource "google_storage_bucket_iam_member" "dataflow_worker_object_admin" {
+  bucket = google_storage_bucket.dataflow.name
+
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.dataflow_worker.email}"
+}
+
+data "google_client_config" "current" {}
+
+
+resource "google_service_account_iam_member" "dataflow_submitter" {
+  service_account_id = google_service_account.dataflow_worker.name
+
+  role   = "roles/iam.serviceAccountUser"
+  member = "user:${var.terraform_operator_email}"
 }

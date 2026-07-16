@@ -50,3 +50,12 @@ resource "google_pubsub_subscription" "dead_letter" {
 
   ack_deadline_seconds = 60
 }
+
+resource "google_pubsub_subscription" "beam_stream" {
+  project = var.project_id
+  name    = "flowops-beam-stream-sub"
+  topic   = google_pubsub_topic.github_events.id
+
+  ack_deadline_seconds       = 60
+  message_retention_duration = "86400s"
+}

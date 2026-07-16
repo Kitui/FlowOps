@@ -21,3 +21,10 @@ resource "google_service_account" "bigquery_transformer" {
   account_id   = "flowops-bigquery-transformer"
   display_name = "FlowOps BigQuery Transformer"
 }
+
+
+resource "google_service_account" "dataflow_worker" {
+  project      = var.project_id
+  account_id   = "flowops-dataflow-worker"
+  display_name = "FlowOps Dataflow Worker"
+}

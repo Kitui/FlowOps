@@ -4,6 +4,7 @@ locals {
     "bigquery.googleapis.com",
     "bigquerydatatransfer.googleapis.com",
     "cloudbuild.googleapis.com",
+    "dataflow.googleapis.com",
     "eventarc.googleapis.com",
     "firestore.googleapis.com",
     "iam.googleapis.com",

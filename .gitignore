@@ -47,3 +47,23 @@ crash.*.log
 # Environment-specific Terraform values
 *.tfvars
 !*.tfvars.example
+
+# Apache Beam local artifacts
+pipelines/beam/output/*
+!pipelines/beam/output/.gitkeep
+pipelines/beam/*.egg-info/
+.pytest_cache/
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python generated files
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Apache Beam local artifacts
+pipelines/beam/output/*
+!pipelines/beam/output/.gitkeep

@@ -58,3 +58,13 @@ variable "event_processor_max_instances" {
   type        = number
   default     = 3
 }
+
+variable "dataflow_bucket_name" {
+  description = "Cloud Storage bucket used for Dataflow staging and temporary files."
+  type        = string
+}
+
+variable "terraform_operator_email" {
+  description = "Email address of the operator permitted to submit Dataflow jobs."
+  type        = string
+}

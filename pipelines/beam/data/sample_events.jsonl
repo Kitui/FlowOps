@@ -1,0 +1,4 @@
+{"event_id":"event-local-001","delivery_id":"delivery-local-001","source":"github","event_type":"push","repository":"Kitui/FlowOps","received_at":"2026-07-16T10:00:00Z","schema_version":"1.0","payload":{"ref":"refs/heads/main","commits":1}}
+{"event_id":"event-local-002","delivery_id":"delivery-local-002","source":"github","event_type":"workflow_run","repository":"Kitui/FlowOps","received_at":"2026-07-16T10:05:00Z","schema_version":"1.0","payload":{"workflow":"FlowOps CI","status":"completed","conclusion":"success"}}
+{"event_id":"event-local-invalid","source":"github"}
+not-valid-json
