@@ -56,3 +56,5 @@ Synchronize test after PR opened: 2026-07-15 18:04:45
 
 Synchronize test after PR opened: 2026-07-15 18:05:08
 >>>>>>> a3fa7e336c27ac286d00feb5887839499db97040
+
+Terraform-managed runtime IAM validation: 2026-07-16 13:14:47
