@@ -24,3 +24,37 @@ variable "event_processor_push_audience" {
   description = "OIDC audience used by the Pub/Sub push subscription."
   type        = string
 }
+
+variable "webhook_receiver_image" {
+  description = "Container image used by the webhook receiver."
+  type        = string
+}
+
+variable "event_processor_image" {
+  description = "Container image used by the event processor."
+  type        = string
+}
+
+variable "webhook_receiver_min_instances" {
+  description = "Minimum receiver instances."
+  type        = number
+  default     = 0
+}
+
+variable "webhook_receiver_max_instances" {
+  description = "Maximum receiver instances."
+  type        = number
+  default     = 2
+}
+
+variable "event_processor_min_instances" {
+  description = "Minimum processor instances."
+  type        = number
+  default     = 0
+}
+
+variable "event_processor_max_instances" {
+  description = "Maximum processor instances."
+  type        = number
+  default     = 3
+}

@@ -4,3 +4,5 @@ bigquery_location = "US"
 
 event_processor_push_endpoint = "https://YOUR-PROCESSOR-URL/pubsub/push"
 event_processor_push_audience = "https://YOUR-PROCESSOR-URL"
+webhook_receiver_image = "us-central1-docker.pkg.dev/your-project/flowops/webhook-receiver:latest"
+event_processor_image   = "us-central1-docker.pkg.dev/your-project/flowops/event-processor:latest"
