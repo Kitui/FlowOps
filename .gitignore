@@ -35,3 +35,15 @@ htmlcov/
 .terraform/
 *.tfstate
 *.tfstate.*
+# Terraform generated files
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+terraform-plan.txt
+crash.log
+crash.*.log
+
+# Environment-specific Terraform values
+*.tfvars
+!*.tfvars.example
